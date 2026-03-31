@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suzao.net.speed.netspeed.dao.user.UserDao">
+    <resultMap id="boResult" type="com.suzao.net.speed.netspeed.bo.user.UserBo">
+        <result column="c_id" property="id"/>
+        <result column="c_sex" property="sex"/>
+        <result column="c_name" property="name"/>
+        <result column="c_account" property="account"/>
+        <result column="c_password" property="password"/>
+        <result column="c_user_type" property="userType"/>
+        <result column="c_mobile" property="mobile"/>
+        <result column="c_email" property="email"/>
+        <result column="c_status" property="status"/>
+        <result column="c_creator_id" property="creatorId"/>
+        <result column="c_created_time" property="createdTime"/>
+        <result column="c_lock_type" property="lockType"/>
+        <result column="c_lock_time" property="lockTime"/>
+        <result column="c_update_pass_time" property="upPassTime"/>
+        <result column="c_pass_error_cnt" property="passErrorCnt"/>
+        <result column="c_tag1" property="tag1"/>
+        <result column="c_type" property="type"/>
+        <result column="c_mac" property="mac"/>
+        <result column="c_code" property="code"/>
+        <result column="portraitImg" property="portraitImg"/>
+    </resultMap>
+
+    <resultMap id="UserPo" type="com.suzao.net.speed.netspeed.vo.user.UserPageVo">
+        <result column="c_id" property="id"/>
+        <result column="c_sex" property="sex"/>
+        <result column="c_name" property="name"/>
+        <result column="c_account" property="account"/>
+        <result column="c_password" property="password"/>
+        <result column="c_user_type" property="userType"/>
+        <result column="c_mobile" property="mobile"/>
+        <result column="c_email" property="email"/>
+        <result column="c_status" property="status"/>
+        <result column="c_creator_id" property="creatorId"/>
+        <result column="c_created_time" property="createdTime"/>
+        <result column="c_lock_type" property="lockType"/>
+        <result column="c_lock_time" property="lockTime"/>
+        <result column="c_update_pass_time" property="upPassTime"/>
+        <result column="c_pass_error_cnt" property="passErrorCnt"/>
+        <result column="c_tag1" property="tag1"/>
+        <result column="c_type" property="type"/>
+        <result column="c_mac" property="mac"/>
+        <result column="c_code" property="code"/>
+        <result column="portraitImg" property="portraitImg"/>
+    </resultMap>
+
+
+    <select id="getUserVisitCount" parameterType="com.suzao.net.speed.netspeed.bo.user.CountBo" resultType="com.suzao.net.speed.netspeed.bo.user.CountBo">
+        SELECT
+        c_user_type AS labelName,
+        count(*) AS count
+        FROM
+        app_user
+        WHERE
+        c_created_time >=#{startDate}
+        AND
+        c_created_time &lt;=#{endDate}
+        GROUP BY
+        c_user_type
+        HAVING
+        c_user_type
+        IN (5 ,6)
+    </select>
+
+    <select id="getUserCount" resultType="com.suzao.net.speed.netspeed.bo.user.CountBo"
+            parameterType="com.suzao.net.speed.netspeed.bo.user.CountBo">
+        SELECT
+        '' AS labelName,
+        a.c_user_type AS labelType,
+        count(*) AS count
+        FROM
+        app_user a
+        WHERE
+        1=1
+        <if test="type == 'Current' ">
+            AND a.c_created_time >=#{startDate}
+            AND a.c_created_time &lt;= #{endDate}
+        </if>
+        GROUP BY
+        a.c_user_type
+    </select>
+
+    <select id="get" resultType="com.suzao.net.speed.netspeed.bo.user.UserBo" parameterType="long">
+        select c_id as id,
+        c_sex as sex,
+        c_name as name,
+        c_account as account,
+        c_password as password,
+        c_user_type as userType,
+        c_mobile as mobile,
+        c_email as email,
+        c_status as status,
+        c_creator_id as creatorId,
+        c_created_time as createdTime,
+        c_lock_type as lockType,
+        c_lock_time as lockTime,
+        c_update_pass_time as upPassTime,
+        c_pass_error_cnt as passErrorCnt,
+        c_tag1 as tag1,
+        c_tag2 as tag2,
+        c_showtype as showType,
+        c_type as type,
+        c_mac as mac,
+        portraitImg,
+        c_code as code ,
+        c_json as json from app_user a
+        where c_id=#{id}
+    </select>
+
+    <select id="getList" resultType="com.suzao.net.speed.netspeed.bo.user.UserBo"
+            parameterType="com.suzao.net.speed.netspeed.base.Page">
+        select c_id as id,
+        c_sex as sex,
+        c_name as name,
+        c_account as account,
+        c_password as password,
+        c_user_type as userType,
+        c_mobile as mobile,
+        c_email as email,
+        c_status as status,
+        c_creator_id as creatorId,
+        c_created_time as createdTime,
+        c_lock_type as lockType,
+        c_lock_time as lockTime,
+        c_update_pass_time as upPassTime,
+        c_pass_error_cnt as passErrorCnt,
+        c_tag1 as tag1,
+        c_tag2 as tag2,
+        c_showtype as showType,
+        c_type as type,
+        c_mac as mac,
+        portraitImg,
+        c_code as code ,
+        c_json as json,
+        SUM(b.score) as integeral
+         from app_user as a
+        LEFT JOIN app_integral as b
+        on a.c_id = b.create_by
+        where 1 = 1
+        <if test="condition.type != null and condition.type != '' ">
+            and
+            a.c_type = #{condition.type}
+        </if>
+        <if test="condition.userTypes != null and condition.userTypes!=''">
+            and a.c_user_type &gt;= #{condition.userTypes}
+        </if>
+        <if test="condition.newType != null and condition.newType != '' ">
+            and
+            (a.c_type = #{condition.newType} or a.c_type = #{condition.newTypes})
+        </if>
+        <if test="condition.searchText != null and condition.searchText != '' ">
+            and
+            (a.c_name like concat('%',#{condition.searchText},'%')
+            or
+            a.c_account like concat('%',#{condition.searchText},'%'))
+        </if>
+        group by a.c_id
+        <if test="condition.integrals != null and condition.integrals != '' ">
+            order by SUM(b.score) DESC
+        </if>
+        <if test="condition.integrals == null and condition.integrals == ''">
+            order by a.c_created_time DESC
+        </if>
+    </select>
+
+    <delete id="delByIds" parameterType="java.util.List">
+        DELETE from app_user
+        where C_ID in
+        <foreach collection="list" separator="," item="item" open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insert" parameterType="com.suzao.net.speed.netspeed.bo.user.UserBo" keyProperty="id" useGeneratedKeys="true">
+        insert into app_user
+        (C_ID,C_NAME,C_ACCOUNT,C_PASSWORD,C_USER_TYPE,C_MOBILE,C_EMAIL,C_STATUS,C_CREATOR_ID,C_CREATED_TIME,C_UPDATE_PASS_TIME,C_SHOWTYPE,C_TYPE,C_MAC,C_CODE, portraitImg, C_TAG1, C_TAG2)
+        values
+        (#{id},#{name}, #{account}, #{password}, #{userType}, #{mobile}, #{email}, #{status}, #{creatorId}, #{createdTime}, #{upPassTime},#{showType},#{type},#{mac},#{code}, #{portraitImg}, #{tag1}, #{tag2})
+    </insert>
+
+    <select id="checkAccount" parameterType="com.suzao.net.speed.netspeed.bo.user.UserBo" resultType="java.lang.Integer">
+        SELECT COUNT(C_ID) FROM app_user where c_account=#{account}
+        <if test="id != null">AND ID != #{id}</if>
+    </select>
+
+    <select id="getEmailList" resultMap="boResult">
+        select * from app_user WHERE c_status = 1 AND c_email != ''
+    </select>
+
+    <select id="getAll" resultType="com.suzao.net.speed.netspeed.bo.user.UserBo">
+        select * from app_user
+    </select>
+
+    <select id="selectPage" resultType="com.suzao.net.speed.netspeed.bo.user.UserBo"
+            parameterType="com.suzao.net.speed.netspeed.base.Page">
+          select c_id as id,
+        c_sex as sex,
+        c_name as name,
+        c_account as account,
+        c_password as password,
+        c_user_type as userType,
+        c_mobile as mobile,
+        c_email as email,
+        c_status as status,
+        c_creator_id as creatorId,
+        c_created_time as createdTime,
+        c_lock_type as lockType,
+        c_lock_time as lockTime,
+        c_update_pass_time as upPassTime,
+        c_pass_error_cnt as passErrorCnt,
+        c_tag1 as tag1,
+        c_type as type,
+        c_mac as mac,
+        portraitImg,
+        c_code as code
+        from app_user a
+        <if test="condition.account != null and condition.account != '' ">
+        where
+        a.`c_account` like CONCAT('%',#{condition.account},'%')
+        </if>
+
+    </select>
+
+    <select id="getUserByAccount" resultType="com.suzao.net.speed.netspeed.bo.user.UserBo" parameterType="java.lang.String">
+             select
+              c_id as id,
+              c_sex as sex,
+              c_name as name,
+              c_account as account,
+              c_password as password,
+              c_user_type as userType,
+              c_mobile as mobile,
+              c_email as email,
+              c_status as status,
+              c_creator_id as creatorId,
+              c_created_time as createdTime,
+              c_lock_type as lockType,
+              c_lock_time as lockTime,
+              c_update_pass_time as upPassTime,
+              c_pass_error_cnt as passErrorCnt,
+              c_tag1 as tag1,
+              c_tag2 as tag2,
+              c_json as json,
+              c_type as type,
+              c_showtype as showType,
+              portraitImg,
+              c_mac as mac,
+              c_code as code
+              from app_user where c_account = #{account}
+         </select>
+
+    <update id="update" parameterType="com.suzao.net.speed.netspeed.bo.user.UserBo">
+        update app_user
+        <set>
+            <if test="name != null">C_NAME = #{name},</if>
+            <if test="sex != null">C_SEX = #{sex} ,</if>
+            <if test="userType != null">C_USER_TYPE = #{userType},</if>
+            <if test="password != null and password != ''">C_PASSWORD = #{password},</if>
+            <if test="mobile != null">C_MOBILE = #{mobile} ,</if>
+            <if test="email != null">C_EMAIL = #{email},</if>
+            <if test="status != null">C_STATUS = #{status},</if>
+            <if test="lockType != null">C_LOCK_TYPE = #{lockType},</if>
+            <if test="lockTime != null">C_LOCK_TIME = #{lockTime},</if>
+            <if test="upPassTime != null">C_UPDATE_PASS_TIME = #{upPassTime},</if>
+            <if test="passErrorCnt != null">C_PASS_ERROR_CNT = #{passErrorCnt},</if>
+            <if test="showType != null">C_SHOWTYPE = #{showType},</if>
+            <if test="mac != null">C_MAC = #{mac},</if>
+            <if test="code != null">C_CODE = #{code},</if>
+            <if test="portraitImg != null">portraitImg=#{portraitImg}</if>
+        </set>
+        where C_ID = #{id}
+    </update>
+
+
+    <update id="updateByAccount" parameterType="com.suzao.net.speed.netspeed.bo.user.UserBo">
+        update app_user
+        <set>
+            <if test="name != null">C_NAME = #{name},</if>
+            <if test="sex != null">C_SEX = #{sex} ,</if>
+            <if test="userType != null">C_USER_TYPE = #{userType},</if>
+            <if test="type != null">C_TYPE = #{type},</if>
+            <if test="password != null and password != ''">C_PASSWORD = #{password},</if>
+            <if test="mobile != null">C_MOBILE = #{mobile} ,</if>
+            <if test="email != null">C_EMAIL = #{email},</if>
+            <if test="status != null">C_STATUS = #{status},</if>
+            <if test="lockType != null">C_LOCK_TYPE = #{lockType},</if>
+            <if test="lockTime != null">C_LOCK_TIME = #{lockTime},</if>
+            <if test="upPassTime != null">C_UPDATE_PASS_TIME = #{upPassTime},</if>
+            <if test="passErrorCnt != null">C_PASS_ERROR_CNT = #{passErrorCnt},</if>
+            <if test="showType != null">C_SHOWTYPE = #{showType},</if>
+            <if test="mac != null">C_MAC = #{mac},</if>
+            <if test="code != null">C_CODE = #{code},</if>
+            <if test="portraitImg != null">portraitImg=#{portraitImg}</if>
+        </set>
+        where C_ACCOUNT = #{account}
+    </update>
+
+    <select id="getPhoneUsers" resultMap="boResult">
+      SELECT * from app_user WHERE c_type = 2 AND c_status = 0
+    </select>
+
+</mapper>
+

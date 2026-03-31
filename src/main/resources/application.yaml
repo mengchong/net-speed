@@ -1,0 +1,45 @@
+# 应用名称
+spring:
+  application:
+    name: net-speed
+  datasource:
+    driver: com.mysql.jdbc.Driver
+    url: jdbc:mysql://81.70.41.3:3306/speed?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: Net123456!
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
+    content-type: text/html
+    cache: false
+
+mybatis:
+  type-aliases-package: com.suzao.net.speed.netspeed.bo
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:mapper/*.xml
+  executor-type: simple
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+document:
+  download:
+    path: /home/tempuser/apache-tomcat-8.5.78/file/60.rar
+  upload:
+    path: /home/tempuser/apache-tomcat-8.5.78/file/
+multipart:
+  maxFileSize: 2000MB
+  maxRequestSize: 2500MB
+
+# 应用服务 WEB 访问端口
+server:
+  port: 8085

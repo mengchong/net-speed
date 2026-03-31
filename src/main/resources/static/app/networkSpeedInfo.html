@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>信息详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<script type="text/javascript" src="../js/lazyload-min.js"></script>
+		<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+	</head>
+	<style>
+		.openApp{
+			border-top: 1px solid #F0F0F0;
+			padding:0px 20px;
+			position: fixed;
+			bottom: 0px;
+			height: 55px;
+			width: 100%;
+			cursor: pointer;
+			background: white;
+		}
+		.openAppDown{
+			width: 75px;
+			height: 26px;
+			background-image: url("../image/openAPP.png");
+			background-size: 100% 100%;
+			cursor: pointer;
+			background-repeat: no-repeat;
+			position: absolute;
+			right: 20px;
+			top: 25%;
+		}
+		.news-title2{
+			float: left;
+			width: 55%;
+			padding-left: 10px;
+			font-size: 12px;
+			font-weight: 600;
+			padding-top: 12px;
+			line-height: 140% !important;
+			word-break: break-all;
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+			overflow: hidden;
+		}
+		.openLogos{
+			height: 55px;
+			width: 57px;
+			float: left;
+			padding-top: 9px;
+			padding-bottom: 9px;
+		}
+
+		.mui-table-view-cell label{
+			width: 22%;
+			float: left;
+			font-size: 14px;
+			padding-top: 0.6%;
+		}
+
+		.mui-table-view-cell:after{
+			height: 1px!important;
+			background-color: #c8c7cc!important;
+		}
+	</style>
+
+	<body>
+
+		<!--下拉刷新容器-->
+		<div class="mui-content" style="background: #FFFFFF;    width: 100%;height: 100%;">
+			<div class="news-body" style="    height: 100%;width: 100%;padding-left: 10px;padding-right: 10px;">
+				<!--<div class="news-title" style="text-align: center">详情</div>-->
+				<!--<div class="news-source"></div>-->
+				<div class="news-content">
+					<ul class="mui-table-view">
+						<!--<li>
+							<p class="mui-ellipsis" id="time" style="float:left;">测速时间:&nbsp</p>
+							<p class="mui-ellipsis"></p>
+						</li>-->
+
+					</ul>
+				</div>
+				<!--<div class="downloadApp" style="display: none;margin-bottom: 50px;">
+					<a href="http://app.ebda.cn:8081/qx/download.html">下载前线客户端，参与评论</a>
+				</div>-->
+				<div style="height: 100px;">
+
+				</div>
+
+			</div>
+			<!--<div class="openApp" style="display: none">
+				<p class="openLogos">
+					<img src="" id="openAlogo" alt="" width="100%" height="100%">
+				</p>
+				<p class="news-title2"></p>
+				<p class="openAppDown" id="openAppDown"></p>
+			</div>-->
+
+		</div>
+
+	</body>
+
+	<script type="text/javascript" charset="utf-8">
+		/*//处理微信二次转发
+		window.onload=function(){
+			var test = window.location.href;
+			//alert(test);
+			if (test.indexOf("&from=singlemessage") >= 0){
+				test = test.replace("&from=singlemessage","");
+				//alert(test);
+				window.location.replace(test);
+			}
+
+		}*/
+
+		/*var down = document.getElementById("openAppDown");
+		down.onclick = function(){
+			window.location.href = "http://app.ebda.cn:8081/qx/download.html"
+		}*/
+        function loadComplete(){
+            var title = "";
+            var id = "";
+            function GetQueryString(name){
+                var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if(r!=null)return  unescape(r[2]); return null;
+            }
+            id = GetQueryString("id");
+            /*var type = GetQueryString("type");
+
+            if(type === 'share'){
+                $(".downloadApp").show();
+				$(".openApp").show();
+				$(".downloadApp").css("display","block")
+				$(".openApp").css("display","block")
+            }else{
+                $(".downloadApp").hide();
+				$(".openApp").hide();
+				$(".downloadApp").css("display","none")
+				$(".openApp").css("display","none")
+            }*/
+            creatNewsBody(id, 0);//139
+            //请求新闻内容
+            function creatNewsBody(id, num, $url) {
+//				var type = GetQueryString("type");
+                $.ajax({
+                    type: "get",
+                    url: "../vesapp/networkSpeed/findById.do?id=" + id,
+                    async: true,
+                    dataType: "json",
+                    success: function(data) {
+                       /* //显示新闻标题
+                        $('.news-title').html(data.data.title);
+                        $('.news-title2').html(data.data.title);*/
+                        //显示时间
+//                        var time = data.data.createTime.substring(0, data.data.createTime.indexOf(' '));
+
+//                        $('.news-source').html(data.data.source+"&nbsp;&nbsp;"+time);
+//
+                       //.replace(/<style(([\s\S])*?)<\/style>/g,"");
+//                    _content = _content.replace(/<head(([\s\S])*?)<\/head>/g,"");//移除head标签
+//                    _content = _content.replace(/<html(([\s\S])*?)\>/g,"");//移除顶部html标签
+//                    _content = _content.replace(/<body lang=ZH-CN>/g,"");//替换body标签
+//                    _content = _content.replace(/<\/body>/g,"");//替换body结束
+//                    _content = _content.replace(/<o:p(([\s\S])*?)<\/o:p>/g,"");//替换不需要标签
+//                    _content = _content.replace(/style\s*=(['\"\s]?)[^'\"]*?\1/gi,'');//替换行内style标签
+//                    _content = _content.replace(/<table(([\s\S])*?)\>/g,"");
+//                    _content = _content.replace(/<\/table(([\s\S])*?)\>/g,"");
+//                    _content = _content.replace(/<a(([\s\S])*?)\>/g,"");
+//                    _content = _content.replace(/<\/a(([\s\S])*?)\>/g,"");
+//                         $(".news-content").html(_content);
+
+						/*if(_content.indexOf("隶书")>0){
+                            _content = _content.replace('隶书','yyy');
+						}else if (_content.indexOf("黑体")>0){
+							_content = _content.replace('黑体','hhh');
+						}else if (_content.indexOf("宋体")>0){
+							_content = _content.replace('宋体','song');
+						}*/
+                        var _content = data.data;
+						$(".mui-table-view").append('<li class="mui-table-view-cell"><label>测速时间:</label><p>'+formatDate(new Date(_content.time))+'</p></li>');
+                        $(".mui-table-view").append('<li class="mui-table-view-cell"><label>网络延迟:</label><p>'+_content.networkDelay+'</p></li>');
+                        $(".mui-table-view").append('<li class="mui-table-view-cell"><label>下载速度:</label><p>'+_content.downloadSpeed+'</p></li>');
+                        $(".mui-table-view").append('<li class="mui-table-view-cell"><label>上传速度:</label><p>'+_content.uploadSpeed+'</p></li>');
+                        $(".mui-table-view").append('<li class="mui-table-view-cell"><label>场景:</label><p>'+_content.sceneName+'</p></li>');
+                        $(".mui-table-view").append('<li class="mui-table-view-cell"><label>区域:</label><p>'+_content.areaName+'</p></li>');
+                        $(".mui-table-view").append('<li class="mui-table-view-cell"><label>地址:</label><p>'+_content.address+'</p></li>');
+                        /*$.ajax({
+							type: "get",
+							url: "/app/api/news/newsListInfo?newsId=" + newsId,
+							async: true,
+							dataType: "json",
+							success: function(data2) {
+								var imgUrls = null;
+                                var time1 = data2.publishTime.substring(0, data2.publishTime.indexOf(' '));
+                                $('.news-source').html(data2.source+"&nbsp;&nbsp;"+time1);
+								if (data2["miniImgSrc"].indexOf(",")>=0){
+									imgUrls = data2["miniImgSrc"].split(",")[0]
+								}else{
+									if (data2["miniImgSrc"] == "" || data2["miniImgSrc"] == null){
+										imgUrls = "/dist/img/brand_img/qxLogos.png"
+									} else{
+										imgUrls = data2["miniImgSrc"];
+									}
+								}
+								$('#openAlogo').attr("src",imgUrls );
+
+
+
+							}
+						})*/
+//						if (type == "share"){
+//							var url = window.location.href.split('#')[0];
+//							//alert(url);
+//							var param = {
+//								url:url
+//							}
+//							//alert("开始测试");
+//							$.ajax({
+//								url:"/app/api/WXShare/permissionValidation",
+//								data:param,
+//								type:"post",
+//								dataType:"json",
+//								success:function(data3){
+//									//alert("appid:"+data.data.appid);
+//									//alert("timestamp:"+data.data.timestamp);
+//									//alert("nonceStr:"+data.data.nonceStr);
+//									//alert("signature:"+data.data.signature);
+//								    wx.config({
+//										debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+//										appId: data3.data.appid, // 必填，公众号的唯一标识
+//										timestamp: data3.data.timestamp, // 必填，生成签名的时间戳
+//										nonceStr: data3.data.nonceStr, // 必填，生成签名的随机串
+//										signature: data3.data.signature,// 必填，签名，见附录1
+//										jsApiList: ["onMenuShareTimeline","onMenuShareAppMessage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+//									});
+//                                    wx.ready(function(){
+//                                        // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+//                                        wx.onMenuShareAppMessage({
+//                                            title: data.data.title, // 分享标题
+//                                            desc: data.data.title, // 分享描述
+//                                            link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+//                                            imgUrl: "/dist/img/brand_img/qxLogos.png", // 分享图标
+//                                            success: function () {
+////                                                alert("配置成功！");
+//
+//                                            }
+//                                        });
+//                                        wx.onMenuShareTimelinew({
+//                                            title: data.data.title, // 分享标题
+//                                            link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+//                                            imgUrl: "/dist/img/brand_img/qxLogos.png", // 分享图标
+//                                            success: function () {
+//                                                // 设置成功
+////                                                alert("配置成功！");
+//                                            }
+//                                        });
+//                                    });
+//								},
+//								error:function (jqXHR,textStatus,errorThrown) {
+//									//alert(XMLHttpRequest.status+"|"+textStatus+"|"+errorThrown);
+//								}
+//
+//							});
+//
+//							wx.error(function(){
+//								//alert("微信验证失败！");
+//							});
+//						}
+
+                    },
+                    error: function(xhr, type, errorThrown) {
+                        console.log('请求内容失败')
+                    }
+                });
+
+            }
+        }
+
+        function formatDate(now) {
+            var year = now.getFullYear();
+            var month = now.getMonth() + 1;
+            var date = now.getDate();
+            var hour = now.getHours();
+            var minute = now.getMinutes();
+            var second = now.getSeconds();
+            return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+        }
+
+        function loadscript()
+        {
+            LazyLoad.css( '../css/mui.min.css');
+            LazyLoad.css( '../css/news.css');
+            LazyLoad.js('../js/jQuery-2.1.4.min.js',loadComplete);
+
+        }
+        setTimeout(loadscript,10);
+	</script>
+</html>

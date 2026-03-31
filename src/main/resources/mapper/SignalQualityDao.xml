@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.suzao.net.speed.netspeed.dao.network.SignalQualityDao">
+
+    <resultMap id="networkSpeed" type="com.suzao.net.speed.netspeed.vo.network.SignalQualityVo">
+        <id column="id" property="id"></id>
+        <result column="bssid" property="bssid"></result>
+        <result column="ssid" property="ssid"></result>
+        <result column="delayPassValue" property="delayPassValue"></result>
+        <result column="centerFreq0" property="centerFreq0"></result>
+        <result column="centerFreq1" property="centerFreq1"></result>
+        <result column="channelWidth" property="channelWidth"></result>
+        <result column="frequency" property="frequency"></result>
+        <result column="level" property="level"></result>
+        <result column="operatorFriendlyName" property="operatorFriendlyName"></result>
+        <result column="timestamp" property="timestamp"></result>
+        <result column="venueName" property="venueName"></result>
+        <result column="address" property="address"></result>
+        <result column="time" property="time"></result>
+        <result column="macAddress" property="macAddress"></result>
+        <result column="macAddress5G" property="macAddress5G"></result>
+        <result column="sceneId" property="sceneId"></result>
+        <result column="areaId" property="areaId"></result>
+        <result column="apId" property="apId"></result>
+        <result column="apName" property="apName"></result>
+        <result column="sceneName" property="sceneName"></result>
+        <result column="areaName" property="areaName"></result>
+        <result column="speedometer" property="speedometer"></result>
+    </resultMap>
+
+    <insert id="insert" parameterType="java.util.List">
+        replace into signal_quality
+        (id,bssid,ssid,delayPassValue,centerFreq0,centerFreq1,channelWidth,frequency,`level`,
+        operatorFriendlyName,`timestamp`,`venueName`,address,macAddress,macAddress5G,sceneId,areaId,apId,speedometer,`time`)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.bssid},#{item.ssid},#{item.delayPassValue},#{item.centerFreq0},#{item.centerFreq1},
+            #{item.channelWidth},#{item.frequency},#{item.level},#{item.operatorFriendlyName},#{item.timestamp},#{item.venueName},
+            #{item.address},#{item.macAddress},#{item.macAddress5G},#{item.sceneId},#{item.areaId},#{item.apId},#{item.speedometer},#{item.time})
+        </foreach>
+    </insert>
+
+    <select id="selectAll" resultType="com.suzao.net.speed.netspeed.vo.network.SignalQualityVo">
+        select
+        ns.*,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM signal_quality ns
+        LEFT JOIN scene
+        ON ns.`sceneId`=scene.`id`
+        LEFT JOIN area
+        ON ns.`areaId`=area.`id`
+        LEFT JOIN ap
+        ON ns.`apId`=ap.`id`
+        where
+        1=1 and
+        ns.`speedometer` like CONCAT('%',#{speedometer},'%') and
+        ns.time <![CDATA[>= ]]> DATE_FORMAT(#{startTime},'%Y-%m-%d 00:00:00') and
+        ns.time <![CDATA[<= ]]> DATE_FORMAT(#{endTime},'%Y-%m-%d 23:59:59')
+        <if test="sceneId!=null">
+            AND ns.`sceneId` LIKE CONCAT('%',#{sceneId},'%')
+        </if>
+        <if test="areaId!=null">
+            AND ns.`areaId` LIKE CONCAT('%',#{areaId},'%')
+        </if>
+        <if test="apId!=null">
+            AND ns.`apId` LIKE CONCAT('%',#{apId},'%')
+        </if>
+        ORDER BY ns.`time` DESC
+    </select>
+
+    <select id="findById" resultType="com.suzao.net.speed.netspeed.vo.network.SignalQualityVo">
+        select
+        ns.*,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM signal_quality ns
+        LEFT JOIN scene
+        ON ns.`sceneId`=scene.`id`
+        LEFT JOIN area
+        ON ns.`areaId`=area.`id`
+        LEFT JOIN ap
+        ON ns.`apId`=ap.`id`
+        where
+        ns.id=#{id}
+    </select>
+
+
+</mapper>

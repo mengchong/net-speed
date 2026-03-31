@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.suzao.net.speed.netspeed.dao.network.DeviceInformationDao">
+
+    <resultMap id="deviceInformation" type="com.suzao.net.speed.netspeed.bo.network.DeviceInformationBo">
+        <id column="id" property="id"></id>
+        <result column="address" property="address"></result>
+        <result column="longitude" property="longitude"></result>
+        <result column="latitude" property="latitude"></result>
+        <result column="localIP" property="localIP"></result>
+        <result column="extranetIP" property="extranetIP"></result>
+        <result column="operatingSystem" property="operatingSystem"></result>
+        <result column="manufacturer" property="manufacturer"></result>
+        <result column="deviceID" property="deviceID"></result>
+        <result column="wlanName" property="wlanName"></result>
+        <result column="macAddress" property="macAddress"></result>
+        <result column="macAddress5G" property="macAddress5G"></result>
+        <result column="username" property="username"></result>
+    </resultMap>
+
+    <insert id="insert" parameterType="java.util.List">
+        replace into deviceinformation
+        (id,address,longitude,latitude,localIP,extranetIP,operatingSystem,manufacturer,deviceID,wlanName,macAddress,macAddress5G,username)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.address},#{item.longitude},#{item.latitude},#{item.localIP},#{item.extranetIP},#{item.operatingSystem},#{item.manufacturer},#{item.deviceID},#{item.wlanName},#{item.macAddress},#{item.macAddress5G},#{item.username})
+        </foreach>
+    </insert>
+
+    <select id="selectAll" resultType="com.suzao.net.speed.netspeed.vo.network.DeviceInformationVo">
+         select
+          di.`id`,
+          di.`address`,
+          di.`longitude`,
+          di.`latitude`,
+          di.`localIP`,
+          di.`extranetIP`,
+          di.`operatingSystem`,
+          di.`manufacturer`,
+          di.`deviceID`,
+          di.`wlanName`,
+          di.`macAddress`,
+          di.`macAddress5G`,
+          di.`username`
+        from
+          deviceinformation di
+        where  1=1
+        <if test="username != null and username != ''">
+            and di.`username` like CONCAT('%',#{username},'%')
+        </if>
+        ORDER BY  di.`id` DESC
+    </select>
+
+    <select id="findById" resultType="com.suzao.net.speed.netspeed.vo.network.DeviceInformationVo">
+        select
+        di.`id`,
+        di.`address`,
+        di.`longitude`,
+        di.`latitude`,
+        di.`localIP`,
+        di.`extranetIP`,
+        di.`operatingSystem`,
+        di.`manufacturer`,
+        di.`deviceID`,
+        di.`wlanName`,
+        di.`macAddress`,
+        di.`macAddress5G`,
+        di.`username`
+        from
+        deviceinformation di
+        where
+        di.id=#{id}
+    </select>
+</mapper>

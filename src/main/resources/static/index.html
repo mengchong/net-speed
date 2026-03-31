@@ -1,0 +1,271 @@
+<!doctype html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>无线数据分析平台</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./js/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <!-- <link rel="stylesheet" href="./css/theme5.css"> -->
+    <script type="text/javascript" src="./js/jQuery-2.1.4.min.js"></script>
+    <script src="./js/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+</head>
+<body class="index">
+<!-- 顶部开始 -->
+<div class="container">
+    <div class="logo">
+        <a href="./index.html">无线数据分析平台</a></div>
+    <div class="left_open">
+        <a><i title="展开左侧栏" class="iconfont">&#xe699;</i></a>
+    </div>
+    <ul class="layui-nav right" lay-filter="">
+        <li class="layui-nav-item">
+            <a href="javascript:;" id="username"></a>
+            <dl class="layui-nav-child">
+                <!-- 二级菜单 -->
+                <dd>
+                    <a onclick="location.href='../login.html'">切换帐号</a></dd>
+            </dl>
+        </li>
+    </ul>
+</div>
+<!-- 顶部结束 -->
+<!-- 中部开始 -->
+<!-- 左侧菜单开始 -->
+<div class="left-nav">
+    <div id="side-nav">
+        <ul id="nav">
+            <li class="speed-content-li">
+                <a href="javascript:;">
+                    <i class="iconfont left-nav-li" lay-tips="模型采集">&#xe723;</i>
+                    <cite>测速</cite>
+                    <i class="iconfont nav_right">&#xe697;</i></a>
+                <ul class="sub-menu">
+                    <li>
+                        <a onclick="xadmin.add_tab('信号质量','../signalquality/index.html')"
+                           id="74ab0ca736147ec0eb5a3d2f8d94a690" class="network-a"
+                        >
+                            <i class="iconfont left-nav-li" lay-tips="信号质量">&#xe723;</i>
+                            <cite>信号质量分析</cite>
+                            <!--<i class="iconfont nav_right">&#xe697;</i>-->
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="xadmin.add_tab('网络测速','../networkSpeed/index.html')"
+                           id="74ab0ca736147ec0eb5a3d2f8d94a689" class="network-a"
+                         >
+                            <i class="iconfont left-nav-li" lay-tips="网络测速">&#xe723;</i>
+                            <cite>AP网络测速分析</cite>
+                            <!--<i class="iconfont nav_right">&#xe697;</i>-->
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="xadmin.add_tab('体验测速','../experienceSpeed/index.html')"
+                           id="869ee874ab2392d161591a3d6e4d803e">
+                            <i class="iconfont left-nav-li" lay-tips="体验测速">&#xe723;</i>
+                            <cite>AP网页视频测速分析</cite>
+                            <!--<i class="iconfont nav_right">&#xe697;</i>-->
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="xadmin.add_tab('Ping测速','../pingSpeed/index.html')"
+                           id="283f362e5e3b5b274c9dff6c495a3784">
+                            <i class="iconfont left-nav-li" lay-tips="Ping测速">&#xe723;</i>
+                            <cite>Ping测速分析</cite>
+                            <!--<i class="iconfont nav_right">&#xe697;</i>-->
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="xadmin.add_tab('设备信息','../deviceInformation/index.html')"
+                           id="f93c0658bf8e9c27caee6825bf9a00ee">
+                            <i class="iconfont left-nav-li" lay-tips="设备信息">&#xe723;</i>
+                            <cite>设备信息管理</cite>
+                            <!--<i class="iconfont nav_right">&#xe697;</i>-->
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="xadmin.add_tab('场景信息','../sceneInformation/index.html')"
+                           id="467279a88e904bc4f5ffe7410ba6352e">
+                            <i class="iconfont left-nav-li" lay-tips="场景信息">&#xe723;</i>
+                            <cite>场景信息</cite>
+                            <!--<i class="iconfont nav_right">&#xe697;</i>-->
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="xadmin.add_tab('区域信息','../areaInformation/index.html')"
+                           id="617960a96e4ee18f8a10e29c92e27378">
+                            <i class="iconfont left-nav-li" lay-tips="区域信息">&#xe723;</i>
+                            <cite>区域信息</cite>
+                            <!--<i class="iconfont nav_right">&#xe697;</i>-->
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="xadmin.add_tab('AP信息','../apInformation/index.html')"
+                           id="1ebaba359008921d74e3fc0420738c55">
+                            <i class="iconfont left-nav-li" lay-tips="AP信息">&#xe723;</i>
+                            <cite>AP信息</cite>
+                            <!--<i class="iconfont nav_right">&#xe697;</i>-->
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="xadmin.add_tab('达标阈值设置','../graphical/yuzhishezhi.html')"
+                           id="627c1ffa6b542a80f824d84f5ef45cc4">
+                            <i class="iconfont left-nav-li" lay-tips="达标阈值设置">&#xe723;</i>
+                            <cite>达标阈值设置</cite>
+                            <!--<i class="iconfont nav_right">&#xe697;</i>-->
+                        </a>
+                    </li>
+                    <li>
+                    <a onclick="xadmin.add_tab('测速统计','../graphical/networkSpeedStatistics.html')"
+                    id="627c1ffa6b542a80f824d84f5ef45cc3">
+                    <i class="iconfont left-nav-li" lay-tips="测速统计">&#xe723;</i>
+                    <cite>AP达标率分析</cite>
+                    <!--<i class="iconfont nav_right">&#xe697;</i>-->
+                    </a>
+                    </li>
+                </ul>
+            </li>
+            <!--<li class="statistic-content-li">-->
+                <!--<a href="javascript:;">-->
+                    <!--<i class="iconfont left-nav-li" lay-tips="模型采集">&#xe757;</i>-->
+                    <!--<cite>数据分析</cite>-->
+                    <!--<i class="iconfont nav_right">&#xe697;</i></a>-->
+                    <!--<ul class="sub-menu">-->
+                        <!--<li>-->
+                            <!--<a onclick="xadmin.add_tab('AP','../graphical/APIndex.html')"-->
+                               <!--id="26b9d416e36b5dea20a5a6b1ab835a89"  data->-->
+                                <!--<i class="iconfont left-nav-li" lay-tips="AP">&#xe723;</i>-->
+                                <!--<cite>AP</cite>-->
+                                <!--&lt;!&ndash;<i class="iconfont nav_right">&#xe697;</i>&ndash;&gt;-->
+                            <!--</a>-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<a onclick="xadmin.add_tab('用户','../graphical/userIndex.html')"-->
+                               <!--id="2d9e82127a37ce4b629484382d0be079">-->
+                                <!--<i class="iconfont left-nav-li" lay-tips="用户">&#xe723;</i>-->
+                                <!--<cite>用户</cite>-->
+                                <!--&lt;!&ndash;<i class="iconfont nav_right">&#xe697;</i>&ndash;&gt;-->
+                            <!--</a>-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<a onclick="xadmin.add_tab('场景','../graphical/sceneIndex.html')"-->
+                               <!--id="2d3f6aa303d9b24107d5c5fa89164b3a">-->
+                                <!--<i class="iconfont left-nav-li" lay-tips="场景">&#xe723;</i>-->
+                                <!--<cite>场景</cite>-->
+                                <!--&lt;!&ndash;<i class="iconfont nav_right">&#xe697;</i>&ndash;&gt;-->
+                            <!--</a>-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<a onclick="xadmin.add_tab('测速统计','../graphical/networkSpeedStatistics.html')"-->
+                               <!--id="627c1ffa6b542a80f824d84f5ef45cc3">-->
+                                <!--<i class="iconfont left-nav-li" lay-tips="测速统计">&#xe723;</i>-->
+                                <!--<cite>测速统计</cite>-->
+                                <!--&lt;!&ndash;<i class="iconfont nav_right">&#xe697;</i>&ndash;&gt;-->
+                            <!--</a>-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<a onclick="xadmin.add_tab('阈值设置','../graphical/thresholdSetting.html')"-->
+                               <!--id="ca3059d2a13b3bd3b2ba6ba72fedfb2b">-->
+                                <!--<i class="iconfont left-nav-li" lay-tips="阈值设置">&#xe6ae;</i>-->
+                                <!--<cite>阈值设置</cite>-->
+                                <!--&lt;!&ndash;<i class="iconfont nav_right">&#xe697;</i>&ndash;&gt;-->
+                            <!--</a>-->
+                        <!--</li>-->
+                    <!--</ul>-->
+            <!--</li>-->
+
+            <li  class="user-content-li">
+                <a onclick="xadmin.add_tab('用户管理','../user/userList.html')" id="58acd0b6984ca53f1b3d5468b4755d4c">
+                    <i class="iconfont left-nav-li" lay-tips="用户管理">&#xe726;</i>
+                    <cite>用户管理</cite>
+                    <!--<i class="iconfont nav_right">&#xe697;</i>-->
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- <div class="x-slide_left"></div> -->
+<!-- 左侧菜单结束 -->
+<!-- 右侧主体开始 -->
+<div class="page-content">
+    <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+        <ul class="layui-tab-title">
+            <li class="home" style="display: none">
+                <i class="layui-icon">&#xe68e;</i>我的桌面
+            </li>
+        </ul>
+        <div class="layui-unselect layui-form-select layui-form-selected" id="tab_right">
+            <dl>
+                <dd data-type="this">关闭当前</dd>
+                <dd data-type="other">关闭其它</dd>
+                <dd data-type="all">关闭全部</dd>
+            </dl>
+        </div>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+
+            </div>
+        </div>
+        <div id="tab_show"></div>
+    </div>
+</div>
+<div class="page-content-bg"></div>
+<style id="theme_style"></style>
+<!-- 右侧主体结束 -->
+<!-- 中部结束 -->
+
+<script>
+    $(function () {
+        var href = location.href
+            , username = href.split("=")[1];
+            var _type = getQueryVariable("type");
+            if(_type == "speed"){
+                $(".user-content-li").hide();
+                $(".statistic-content-li").hide();
+                $(".container").hide();
+                $(".speed-content-li").show();
+                $(".left-nav").css("top","0px");
+                $(".page-content").css("top","0px");
+            }else if(_type == "statistic"){
+                $(".user-content-li").hide();
+                $(".statistic-content-li").show();
+                $(".speed-content-li").hide();
+                $(".container").hide();
+                $(".left-nav").css("top","0px");
+                $(".page-content").css("top","0px");
+            }else{
+                $(".user-content-li").show();
+                $(".statistic-content-li").show();
+                $(".speed-content-li").show();
+                $(".container").show();
+                $(".left-nav").css("top","45px");
+                $(".page-content").css("top","45px");
+            }
+
+
+        $("#username").html(username);
+    });
+
+
+    //获取地址中的值
+    function getQueryVariable(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] == variable) {
+                return pair[1];
+            }
+        }
+        return (null);
+    }
+</script>
+</body>
+
+</html>

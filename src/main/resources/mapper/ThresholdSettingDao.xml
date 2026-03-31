@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.suzao.net.speed.netspeed.dao.network.ThresholdSettingDao">
+
+    <select id="getThresholdSetting" resultType="com.suzao.net.speed.netspeed.bo.network.ThresholdSettingBo" parameterType="long">
+        select * from thresholdsetting  where id=#{id}
+    </select>
+
+
+    <insert id="insert" parameterType="com.suzao.net.speed.netspeed.bo.network.ThresholdSettingBo" keyProperty="id" useGeneratedKeys="true">
+        insert into thresholdsetting
+        (id,signalValue,upstreamValue,downValue,webSuccessValue,webFirstValue,videoValue,pingDelayValue,pingPackageValue,authSuccessValue,authDelayValue,authSuccessSection,authDelaySection)
+        values
+        (#{id},#{signalValue}, #{upstreamValue}, #{downValue}, #{webSuccessValue}, #{webFirstValue}, #{videoValue}, #{pingDelayValue}, #{pingPackageValue}, #{authSuccessValue}, #{authDelayValue},#{authSuccessSection},#{authDelaySection})
+    </insert>
+
+
+    <update id="update" parameterType="com.suzao.net.speed.netspeed.bo.network.ThresholdSettingBo">
+        update thresholdsetting
+        <set>
+            <if test="signalValue != null">signalValue = #{signalValue},</if>
+            <if test="upstreamValue != null">upstreamValue = #{upstreamValue} ,</if>
+            <if test="downValue != null">downValue = #{downValue},</if>
+            <if test="webSuccessValue != null and webSuccessValue != ''">webSuccessValue = #{webSuccessValue},</if>
+            <if test="webFirstValue != null">webFirstValue = #{webFirstValue} ,</if>
+            <if test="videoValue != null">videoValue = #{videoValue},</if>
+            <if test="pingDelayValue != null">pingDelayValue = #{pingDelayValue},</if>
+            <if test="pingPackageValue != null">pingPackageValue = #{pingPackageValue},</if>
+            <if test="authSuccessValue != null">authSuccessValue = #{authSuccessValue},</if>
+            <if test="authDelayValue != null">authDelayValue = #{authDelayValue},</if>
+            <if test="authSuccessSection != null">authSuccessSection = #{authSuccessSection},</if>
+            <if test="authDelaySection != null">authDelaySection = #{authDelaySection}</if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

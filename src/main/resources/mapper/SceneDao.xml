@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.suzao.net.speed.netspeed.dao.handle.SceneDao">
+
+    <resultMap id="scene" type="com.suzao.net.speed.netspeed.bo.handle.SceneBo">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+    </resultMap>
+
+    <resultMap id="area" type="com.suzao.net.speed.netspeed.vo.handle.AreaVo">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="sceneId" property="sceneId"></result>
+        <result column="sceneName" property="sceneName"></result>
+    </resultMap>
+
+    <resultMap id="ap" type="com.suzao.net.speed.netspeed.vo.handle.ApVo">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="mac" property="mac"></result>
+        <result column="ipaddress" property="ipaddress"></result>
+        <result column="sceneId" property="sceneId"></result>
+        <result column="areaId" property="areaId"></result>
+        <result column="areaName" property="areaName"></result>
+    </resultMap>
+
+    <insert id="insert" parameterType="java.util.List">
+        replace into scene
+        (id,name)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.name})
+        </foreach>
+    </insert>
+
+    <insert id="batchInsertArea" parameterType="java.util.List">
+        replace into area
+        (id,name,sceneId)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.name},#{item.sceneId})
+        </foreach>
+    </insert>
+
+    <insert id="batchInsertAp" parameterType="java.util.List">
+        replace into ap
+        (id,name,mac,ipaddress,areaId)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.name},#{item.mac},#{item.ipaddress},#{item.areaId})
+        </foreach>
+    </insert>
+
+    <select id="selectAllScene" resultType="com.suzao.net.speed.netspeed.bo.handle.SceneBo">
+        select
+        scene.`id`,
+        scene.`name`
+        from
+        scene
+    </select>
+
+    <select id="selectAllArea" resultType="com.suzao.net.speed.netspeed.bo.handle.AreaBo">
+        select
+        area.`id`,
+        area.`name`,
+        area.`sceneId`
+        from
+        area
+    </select>
+
+    <select id="selectAllAp" resultType="com.suzao.net.speed.netspeed.bo.handle.ApBo">
+        select
+        ap.`id`,
+        ap.`name`,
+        ap.`mac`,
+        ap.`ipaddress`,
+        ap.`areaId`
+        from
+        ap
+    </select>
+
+    <select id="findBySceneId" resultMap="scene" parameterType="java.lang.Integer">
+        select
+        scene.`id`,
+        scene.`name`
+        from
+        scene
+        where
+        scene.`id` = #{id}
+    </select>
+
+    <select id="findByAreaId" resultMap="area" parameterType="java.lang.Integer">
+        select
+        area.`id`,
+        area.`name`,
+        area.`sceneId`
+        FROM area
+        where
+        area.`id` = #{id}
+    </select>
+
+    <select id="findAreaBySceneId" resultMap="area" parameterType="java.lang.Integer">
+        select
+        area.`id`,
+        area.`name`,
+        area.`sceneId`
+        FROM area
+        where
+        area.`sceneId` = #{sceneId}
+    </select>
+
+    <select id="findSceneAndArea" resultType="com.suzao.net.speed.netspeed.vo.handle.ApVo">
+       SELECT
+        ap.`id`,
+        ap.`name`,
+        ap.`mac`,
+        ap.`ipaddress`,
+        ap.`areaId`,
+        area.`name` areaName,
+        area.`sceneId` sceneId
+        FROM ap
+      LEFT JOIN area
+      ON ap.`areaId`=area.`id`
+      WHERE
+      ap.`mac` =#{mac}
+    </select>
+
+
+    <select id="queryByMac" resultType="com.suzao.net.speed.netspeed.vo.network.StatisticalAp" parameterType="java.util.List">
+        SELECT
+        ap.*, area. NAME AS areaName,scene.name as sceneName
+        FROM
+        ap ap
+        LEFT JOIN area area ON ap.areaId = area.id
+        LEFT JOIN scene scene ON area.sceneId = scene.id
+        WHERE
+        1=1 AND
+        ap.mac IN
+        <foreach collection="list" separator="," item="item" open="(" close=")">
+            #{item}
+        </foreach>
+
+    </select>
+
+
+    <select id="selectAllApSceneId" resultType="com.suzao.net.speed.netspeed.vo.handle.ApVo">
+      SELECT * FROM ap ap LEFT JOIN area area ON ap.areaId = area.id
+    </select>
+
+    <select id="selectAPCount" resultType="com.suzao.net.speed.netspeed.vo.network.PassValueVo"
+            parameterType="java.util.List">
+        SELECT COUNT(*) apCount -- ,ap.id,ap.name apName,ap.areaId,area.name areaName,scene.name sceneName
+        <if test="sceneId==null">
+            ,scene.name sceneName
+        </if>
+        <if test="sceneId!=null and areaId==null">
+            ,ap.areaId,area.name areaName,scene.name sceneName
+        </if>
+        <if test="areaId!=null and sceneId!=null">
+            ,ap.id,ap.name apName,ap.areaId,area.name areaName,scene.name sceneName
+        </if>
+        FROM ap
+        LEFT JOIN area ON area.id=ap.areaId
+        LEFT JOIN scene ON scene.id=area.sceneId
+        WHERE ap.areaId IN(SELECT area.id FROM area
+        WHERE
+        1=1
+        <if test="sceneId!=null">
+            and area.sceneId = #{sceneId}
+        </if>
+        <if test="areaId!=null">
+            and ap.areaId = #{areaId}
+        </if>
+        )
+        <if test="sceneId==null">
+            GROUP BY scene.id
+        </if>
+        <if test="sceneId!=null and areaId==null">
+            GROUP BY ap.areaId
+        </if>
+        <if test="areaId!=null and sceneId!=null">
+            GROUP BY ap.id
+        </if>
+        order by scene.id
+
+    </select>
+
+    <select id="selectBySceneNameOrAreaNameOrApName" resultType="com.suzao.net.speed.netspeed.vo.handle.ApVo" parameterType="java.util.List">
+       SELECT
+         ap.`id`,
+        ap.`name`,
+        ap.`mac`,
+        ap.`ipaddress`,
+        ap.`areaId`
+        FROM ap
+        LEFT JOIN area ON area.id=ap.areaId
+        LEFT JOIN scene ON scene.id=area.sceneId
+        WHERE
+        1=1
+        <if test="sceneName!=null">
+        and scene.name=#{sceneName}
+        </if>
+        <if test="areaName!=null">
+        and area.name=#{areaName}
+        </if>
+        <if test="apName!=null">
+        and ap.name=#{apName}
+        </if>
+    </select>
+
+    <select id="selectByIds" resultType="com.suzao.net.speed.netspeed.vo.handle.ApVo" parameterType="java.util.List">
+         SELECT
+        ap.`id`,
+        ap.`name`,
+        ap.`mac`,
+        ap.`ipaddress`,
+        ap.`areaId`,
+        area.`name` areaName,
+        area.`sceneId` sceneId
+        FROM ap
+        LEFT JOIN area ON ap.areaId=area.id
+        LEFT JOIN scene ON area.sceneId=scene.id
+        WHERE ap.id IN
+        <foreach item="item" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <delete id="clearScene">
+        DELETE FROM scene
+    </delete>
+
+    <delete id="clearArea">
+        DELETE FROM area
+    </delete>
+
+    <delete id="clearAp">
+        DELETE FROM ap
+    </delete>
+
+</mapper>

@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.suzao.net.speed.netspeed.dao.network.PingSpeedDao">
+
+    <resultMap id="pingSpeed" type="com.suzao.net.speed.netspeed.vo.network.PingSpeedVo">
+        <id column="id" property="id"></id>
+        <result column="address" property="address"></result>
+        <result column="macAddress" property="macAddress"></result>
+        <result column="macAddress5G" property="macAddress5G"></result>
+        <result column="time" property="time"></result>
+        <result column="size" property="size"></result>
+        <result column="sendQuantity" property="sendQuantity"></result>
+        <result column="receiveQuantity" property="receiveQuantity"></result>
+        <result column="packetLossRate" property="packetLossRate"></result>
+        <result column="avgRTT" property="avgRTT"></result>
+        <result column="minRTT" property="minRTT"></result>
+        <result column="maxRTT" property="maxRTT"></result>
+        <result column="meanDifference" property="meanDifference"></result>
+        <result column="sceneId" property="sceneId"></result>
+        <result column="areaId" property="areaId"></result>
+        <result column="apId" property="apId"></result>
+        <result column="apName" property="apName"></result>
+        <result column="sceneName" property="sceneName"></result>
+        <result column="areaName" property="areaName"></result>
+        <result column="speedometer" property="speedometer"></result>
+    </resultMap>
+
+    <insert id="insert" parameterType="java.util.List">
+        replace into pingspeed
+        (id,address,macAddress,macAddress5G,time,size,sendQuantity,receiveQuantity,packetLossRate,avgRTT,minRTT,maxRTT,meanDifference,sceneId,areaId,apId,speedometer)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.address},#{item.macAddress},#{item.macAddress5G},#{item.time},#{item.size},#{item.sendQuantity},#{item.receiveQuantity},#{item.packetLossRate},#{item.avgRTT},#{item.minRTT},#{item.maxRTT},#{item.meanDifference},#{item.sceneId},#{item.areaId},#{item.apId},#{item.speedometer})
+        </foreach>
+    </insert>
+
+    <select id="selectAll" resultType="com.suzao.net.speed.netspeed.vo.network.PingSpeedVo">
+        select
+        ps.`id`,
+        ps.`address`,
+        ps.`macAddress`,
+        ps.`macAddress5G`,
+        ps.`time`,
+        ps.`size`,
+        ps.`sendQuantity`,
+        ps.`receiveQuantity`,
+        ps.`packetLossRate`,
+        ps.`avgRTT`,
+        ps.`minRTT`,
+        ps.`maxRTT`,
+        ps.`meanDifference`,
+        ps.`sceneId`,
+        ps.`areaId`,
+        ps.`apId`,
+        ps.`speedometer`,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM
+        pingspeed ps
+        LEFT JOIN scene
+        ON ps.`sceneId`=scene.`id`
+        LEFT JOIN area
+        ON ps.`areaId`=area.`id`
+        LEFT JOIN ap
+        ON ps.`apId`=ap.`id`
+        where
+        1=1 and
+        ps.`speedometer` like CONCAT('%',#{speedometer},'%') and
+        ps.time <![CDATA[>= ]]> DATE_FORMAT(#{startTime},'%Y-%m-%d 00:00:00') and
+        ps.time <![CDATA[<= ]]> DATE_FORMAT(#{endTime},'%Y-%m-%d 23:59:59')
+        <if test="sceneId!=null">
+            AND ps.`sceneId` LIKE CONCAT('%',#{sceneId},'%')
+        </if>
+        <if test="areaId!=null">
+            AND ps.`areaId` LIKE CONCAT('%',#{areaId},'%')
+        </if>
+        <if test="apId!=null">
+            AND ps.`apId` LIKE CONCAT('%',#{apId},'%')
+        </if>
+        ORDER BY ps.`time` DESC
+    </select>
+
+    <select id="findById" resultType="com.suzao.net.speed.netspeed.vo.network.PingSpeedVo">
+        select
+        ps.`id`,
+        ps.`address`,
+        ps.`macAddress`,
+        ps.`macAddress5G`,
+        ps.`time`,
+        ps.`size`,
+        ps.`sendQuantity`,
+        ps.`receiveQuantity`,
+        ps.`packetLossRate`,
+        ps.`avgRTT`,
+        ps.`minRTT`,
+        ps.`maxRTT`,
+        ps.`meanDifference`,
+        ps.`sceneId`,
+        ps.`areaId`,
+        ps.`apId`,
+        ps.`speedometer`,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM
+        pingspeed ps
+        LEFT JOIN scene
+        ON ps.`sceneId`=scene.`id`
+        LEFT JOIN area
+        ON ps.`areaId`=area.`id`
+        LEFT JOIN ap
+        ON ps.`apId`=ap.`id`
+        where
+        ps.id=#{id}
+    </select>
+
+    <select id="pingPassvalue" resultType="com.suzao.net.speed.netspeed.vo.network.PingSpeedVo"
+            parameterType="java.util.List">
+        SELECT scene.name sceneName,
+        area.name areaName,
+        ap.name apName,
+        ps.time,
+        IFNULL((ps.packetLossRate),0) packetLossRate
+        FROM scene LEFT JOIN pingspeed ps ON ps.`sceneId`=scene.`id`
+        LEFT JOIN area
+        ON ps.`areaId`=area.`id`
+        LEFT JOIN ap
+        ON ps.`apId`=ap.`id`
+        where
+        1=1
+        <if test="sceneId!=null">
+            and scene.id=#{sceneId}
+        </if>
+        order by scene.id
+        <!--<if test="areaId!=null">-->
+        <!--AND ps.`areaId` LIKE CONCAT('%',#{areaId},'%')-->
+        <!--</if>-->
+        <!--<if test="apId!=null">-->
+        <!--AND ps.`apId` LIKE CONCAT('%',#{apId},'%')-->
+        <!--</if>-->
+    </select>
+
+    <select id="pingPassvalueArea" resultType="com.suzao.net.speed.netspeed.vo.network.PingSpeedVo"
+            parameterType="java.util.List">
+        SELECT scene.name sceneName,
+        area.name areaName,
+        ap.name apName,
+        ps.time,
+        IFNULL((ps.packetLossRate),0) packetLossRate
+        FROM area LEFT JOIN pingspeed ps ON ps.`areaId`=area.`id`
+        LEFT JOIN scene
+        ON ps.`sceneId`=scene.`id`
+        LEFT JOIN ap
+        ON ps.`apId`=ap.`id`
+        where
+        1=1
+        <if test="sceneId!=null">
+            and area.sceneId=#{sceneId}
+        </if>
+        order by scene.id
+        <!--<if test="areaId!=null">-->
+        <!--/*AND ps.`areaId` LIKE CONCAT('%',#{areaId},'%')*/-->
+        <!--and area.sceneId=#{sceneId}-->
+        <!--</if>-->
+        <!--<if test="apId!=null">-->
+        <!--AND ps.`apId` LIKE CONCAT('%',#{apId},'%')-->
+        <!--</if>-->
+    </select>
+
+    <select id="pingPassvalueAP" resultType="com.suzao.net.speed.netspeed.vo.network.PingSpeedVo"
+            parameterType="java.util.List">
+        SELECT scene.name sceneName,
+        area.name areaName,
+        ap.name apName,
+        ps.time,
+        IFNULL((ps.packetLossRate),0) packetLossRate
+        FROM ap LEFT JOIN pingspeed ps ON ps.`apId`=ap.`id`
+        LEFT JOIN scene
+        ON ps.`sceneId`=scene.`id`
+        LEFT JOIN area
+        ON ps.`areaId`=area.`id`
+        where
+        1=1
+        <!--<if test="sceneId!=null">-->
+        <!--AND ps.`sceneId` LIKE CONCAT('%',#{sceneId},'%')-->
+        <!--</if>-->
+        <if test="areaId!=null">
+            and ap.areaId=#{areaId}
+        </if>
+        order by scene.id
+        <!--<if test="apId!=null">-->
+        <!--/*AND ps.`apId` LIKE CONCAT('%',#{apId},'%')*/-->
+        <!--and ap.areaId=#{areaId}-->
+        <!--</if>-->
+    </select>
+
+    <select id="selectAPCountByTestFromPingSpeed" resultType="com.suzao.net.speed.netspeed.vo.network.PassValueVo"
+            parameterType="java.util.List">
+        SELECT ap.id,ap.name apName,scene.name sceneName, area.name areaName
+        FROM pingspeed ps
+        LEFT JOIN scene ON scene.id=ps.sceneId
+        LEFT JOIN area ON ps.areaId=area.id
+        LEFT JOIN ap ON ps.apId=ap.id
+        WHERE
+        1=1
+        <if test="sceneId==null and areaId==null">
+            and scene.name IS NOT NULL
+        </if>
+        <if test="sceneId!=null and areaId==null">
+            and scene.name IS NOT NULL
+            and scene.id=#{sceneId}
+        </if>
+        <if test="areaId!=null and sceneId!=null">
+            and area.name IS NOT NULL
+            and area.id=#{areaId}
+        </if>
+    </select>
+
+    <select id="selectGTETData" resultType="com.suzao.net.speed.netspeed.vo.network.PingSpeedVo"
+            parameterType="java.util.List">
+        select
+        ps.`id`,
+        ps.`address`,
+        ps.`macAddress`,
+        ps.`macAddress5G`,
+        ps.`time`,
+        ps.`size`,
+        ps.`sendQuantity`,
+        ps.`receiveQuantity`,
+        ps.`packetLossRate`,
+        ps.`avgRTT`,
+        ps.`minRTT`,
+        ps.`maxRTT`,
+        ps.`meanDifference`,
+        ps.`sceneId`,
+        ps.`areaId`,
+        ps.`apId`,
+        ps.`speedometer`,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM
+        pingspeed ps
+        LEFT JOIN scene ON ps.sceneId=scene.id
+        LEFT JOIN area ON ps.areaId =area.id
+        LEFT JOIN ap ON ps.apId=ap.id
+        WHERE
+        1=1
+        and
+        ps.packetLossRate <![CDATA[ >= ]]> ${lostPacketRatePassValue}
+        <if test="sceneName!=null">
+            AND scene.name=#{sceneName}
+        </if>
+        <if test="areaName!=null">
+            AND area.name=#{areaName}
+        </if>
+        <if test="apName!=null">
+            AND ap.name=#{apName}
+        </if>
+
+    </select>
+
+    <select id="selectLTData" resultType="com.suzao.net.speed.netspeed.vo.network.PingSpeedVo"
+            parameterType="java.util.List">
+        select
+        ps.`id`,
+        ps.`address`,
+        ps.`macAddress`,
+        ps.`macAddress5G`,
+        ps.`time`,
+        ps.`size`,
+        ps.`sendQuantity`,
+        ps.`receiveQuantity`,
+        ps.`packetLossRate`,
+        ps.`avgRTT`,
+        ps.`minRTT`,
+        ps.`maxRTT`,
+        ps.`meanDifference`,
+        ps.`sceneId`,
+        ps.`areaId`,
+        ps.`apId`,
+        ps.`speedometer`,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM
+        pingspeed ps
+        LEFT JOIN scene ON ps.sceneId=scene.id
+        LEFT JOIN area ON ps.areaId =area.id
+        LEFT JOIN ap ON ps.apId=ap.id
+        WHERE
+        1=1
+        and
+        ps.packetLossRate <![CDATA[< ]]>${lostPacketRatePassValue}
+        <if test="sceneName!=null">
+            AND scene.name=#{sceneName}
+        </if>
+        <if test="areaName!=null">
+            AND area.name=#{areaName}
+        </if>
+        <if test="apName!=null">
+            AND ap.name=#{apName}
+        </if>
+
+    </select>
+
+    <select id="selectData" resultType="com.suzao.net.speed.netspeed.vo.network.PingSpeedVo"
+            parameterType="java.util.List">
+        select
+        ps.`id`,
+        ps.`address`,
+        ps.`macAddress`,
+        ps.`macAddress5G`,
+        ps.`time`,
+        ps.`size`,
+        ps.`sendQuantity`,
+        ps.`receiveQuantity`,
+        ps.`packetLossRate`,
+        ps.`avgRTT`,
+        ps.`minRTT`,
+        ps.`maxRTT`,
+        ps.`meanDifference`,
+        ps.`sceneId`,
+        ps.`areaId`,
+        ps.`apId`,
+        ps.`speedometer`,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM
+        pingspeed ps
+        LEFT JOIN scene ON ps.sceneId=scene.id
+        LEFT JOIN area ON ps.areaId =area.id
+        LEFT JOIN ap ON ps.apId=ap.id
+        WHERE
+        1=1
+        <if test="sceneName!=null">
+            AND scene.name=#{sceneName}
+        </if>
+        <if test="areaName!=null">
+            AND area.name=#{areaName}
+        </if>
+        <if test="apName!=null">
+            AND ap.name=#{apName}
+        </if>
+
+    </select>
+
+</mapper>

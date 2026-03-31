@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.suzao.net.speed.netspeed.dao.network.NetworkSpeedDao">
+
+    <resultMap id="networkSpeed" type="com.suzao.net.speed.netspeed.vo.network.NetworkSpeedVo">
+        <id column="id" property="id"></id>
+        <result column="networkDelay" property="networkDelay"></result>
+        <result column="downloadSpeed" property="downloadSpeed"></result>
+        <result column="uploadSpeed" property="uploadSpeed"></result>
+        <result column="time" property="time"></result>
+        <result column="address" property="address"></result>
+        <result column="macAddress" property="macAddress"></result>
+        <result column="macAddress5G" property="macAddress5G"></result>
+        <result column="sceneId" property="sceneId"></result>
+        <result column="areaId" property="areaId"></result>
+        <result column="apId" property="apId"></result>
+        <result column="apName" property="apName"></result>
+        <result column="sceneName" property="sceneName"></result>
+        <result column="areaName" property="areaName"></result>
+        <result column="speedometer" property="speedometer"></result>
+    </resultMap>
+
+    <insert id="insert" parameterType="java.util.List">
+        replace into networkspeed
+        (id,networkDelay,downloadSpeed,uploadSpeed,time,address,macAddress,macAddress5G,sceneId,areaId,apId,speedometer)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.networkDelay},#{item.downloadSpeed},#{item.uploadSpeed},#{item.time},#{item.address},#{item.macAddress},#{item.macAddress5G},#{item.sceneId},#{item.areaId},#{item.apId},#{item.speedometer})
+        </foreach>
+    </insert>
+
+    <select id="selectAll" resultType="com.suzao.net.speed.netspeed.vo.network.NetworkSpeedVo">
+        select
+        ns.`id`,
+        ns.`networkDelay`,
+        ns.`downloadSpeed`,
+        ns.`uploadSpeed`,
+        ns.`time`,
+        ns.`address`,
+        ns.`macAddress`,
+        ns.`macAddress5G`,
+        ns.`sceneId`,
+        ns.`areaId`,
+        ns.`apId`,
+        ns.`speedometer`,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM networkspeed ns
+        LEFT JOIN scene
+        ON ns.`sceneId`=scene.`id`
+        LEFT JOIN area
+        ON ns.`areaId`=area.`id`
+        LEFT JOIN ap
+        ON ns.`apId`=ap.`id`
+        where
+        1=1 and
+        ns.`speedometer` like CONCAT('%',#{speedometer},'%') and
+        ns.time <![CDATA[>= ]]> DATE_FORMAT(#{startTime},'%Y-%m-%d 00:00:00') and
+        ns.time <![CDATA[<= ]]> DATE_FORMAT(#{endTime},'%Y-%m-%d 23:59:59')
+        <if test="sceneId!=null">
+            AND ns.`sceneId` LIKE CONCAT('%',#{sceneId},'%')
+        </if>
+        <if test="areaId!=null">
+            AND ns.`areaId` LIKE CONCAT('%',#{areaId},'%')
+        </if>
+        <if test="apId!=null">
+            AND ns.`apId` LIKE CONCAT('%',#{apId},'%')
+        </if>
+        ORDER BY ns.`time` DESC
+    </select>
+
+    <select id="findById" resultType="com.suzao.net.speed.netspeed.vo.network.NetworkSpeedVo">
+        select
+        ns.`id`,
+        ns.`networkDelay`,
+        ns.`downloadSpeed`,
+        ns.`uploadSpeed`,
+        ns.`time`,
+        ns.`address`,
+        ns.`macAddress`,
+        ns.`macAddress5G`,
+        ns.`sceneId`,
+        ns.`areaId`,
+        ns.`apId`,
+        ns.`speedometer`,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM networkspeed ns
+        LEFT JOIN scene
+        ON ns.`sceneId`=scene.`id`
+        LEFT JOIN area
+        ON ns.`areaId`=area.`id`
+        LEFT JOIN ap
+        ON ns.`apId`=ap.`id`
+        where
+        ns.id=#{id}
+    </select>
+
+    <select id="networkPassvalue" resultType="com.suzao.net.speed.netspeed.vo.network.NetworkSpeedVo"
+            parameterType="java.util.List">
+        SELECT scene.name sceneName,
+        area.name areaName,
+        ap.name apName,
+        ns.time,
+        IFNULL((ns.networkDelay),0) networkDelay
+        FROM scene LEFT JOIN networkspeed ns ON
+        ns.`sceneId`=scene.`id`
+        LEFT JOIN area
+        ON ns.`areaId`=area.`id`
+        LEFT JOIN ap
+        ON ns.`apId`=ap.`id`
+        WHERE
+        1=1
+        <if test="sceneId!=null">
+            and scene.id=#{sceneId}
+        </if>
+        order by scene.id
+        <!--<if test="areaId!=null">-->
+        <!--AND ns.`areaId` LIKE CONCAT('%',#{areaId},'%')-->
+        <!--</if>-->
+        <!--<if test="apId!=null">-->
+        <!--AND ns.`apId` LIKE CONCAT('%',#{apId},'%')-->
+        <!--</if>-->
+    </select>
+
+    <select id="networkPassvalueArea" resultType="com.suzao.net.speed.netspeed.vo.network.NetworkSpeedVo"
+            parameterType="java.util.List">
+        SELECT scene.name sceneName,
+        area.name areaName,
+        ap.name apName,
+        ns.time,
+        IFNULL((ns.networkDelay),0) networkDelay
+        FROM area LEFT JOIN networkspeed ns ON
+        ns.`areaId`=area.`id`
+        LEFT JOIN scene
+        ON ns.`sceneId`=scene.`id`
+        LEFT JOIN ap
+        ON ns.`apId`=ap.`id`
+        WHERE
+        1=1
+        <if test="sceneId!=null">
+            and area.sceneId=#{sceneId}
+        </if>
+        order by scene.id
+        <!--<if test="areaId!=null">-->
+        <!--/*AND ns.`areaId` LIKE CONCAT('%',#{areaId},'%')*/-->
+        <!--and area.sceneId=#{sceneId}-->
+        <!--</if>-->
+        <!--<if test="apId!=null">-->
+        <!--AND ns.`apId` LIKE CONCAT('%',#{apId},'%')-->
+        <!--</if>-->
+    </select>
+
+    <select id="networkPassvalueAP" resultType="com.suzao.net.speed.netspeed.vo.network.NetworkSpeedVo"
+            parameterType="java.util.List">
+        SELECT scene.name sceneName,
+        area.name areaName,
+        ap.name apName,
+        ns.time,
+        IFNULL((ns.networkDelay),0) networkDelay
+        FROM ap LEFT JOIN networkspeed ns ON
+        ns.`apId`=ap.`id`
+        LEFT JOIN scene
+        ON ns.`sceneId`=scene.`id`
+        LEFT JOIN area
+        ON ns.`areaId`=area.`id`
+        WHERE
+        1=1
+        <!--<if test="sceneId!=null">-->
+        <!--AND ns.`sceneId` LIKE CONCAT('%',#{sceneId},'%')-->
+        <!--</if>-->
+        <if test="areaId!=null">
+            and ap.areaId=#{areaId}
+        </if>
+        order by scene.id
+        <!-- <if test="apId!=null">
+             /*AND ns.`apId` LIKE CONCAT('%',#{apId},'%')*/
+             and ap.areaId=#{areaId}
+         </if>-->
+    </select>
+
+    <select id="selectAPCountByTestFromNetworkSpeed" resultType="com.suzao.net.speed.netspeed.vo.network.PassValueVo"
+            parameterType="java.util.List">
+        SELECT ap.id,ap.name apName,scene.name sceneName, area.name areaName
+        FROM networkspeed ns
+        LEFT JOIN scene ON scene.id=ns.sceneId
+        LEFT JOIN area ON ns.areaId=area.id
+        LEFT JOIN ap ON ns.apId=ap.id
+        WHERE
+        1=1
+        <if test="sceneId==null and areaId==null">
+            and scene.name IS NOT NULL
+        </if>
+        <if test="sceneId!=null and areaId==null">
+            and scene.name IS NOT NULL
+            and scene.id=#{sceneId}
+        </if>
+        <if test="areaId!=null and sceneId!=null">
+            and area.name IS NOT NULL
+            and area.id=#{areaId}
+        </if>
+
+    </select>
+
+    <select id="selectGTETData" resultType="com.suzao.net.speed.netspeed.vo.network.NetworkSpeedVo"
+            parameterType="com.suzao.net.speed.netspeed.vo.network.NetworkSpeedVo">
+        SELECT ns.`id`,
+        ns.`networkDelay`,
+        ns.`downloadSpeed`,
+        ns.`uploadSpeed`,
+        ns.`time`,
+        ns.`address`,
+        ns.`macAddress`,
+        ns.`macAddress5G`,
+        ns.`sceneId`,
+        ns.`areaId`,
+        ns.`apId`,
+        ns.`speedometer`,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM networkspeed ns
+        LEFT JOIN scene ON ns.sceneId=scene.id
+        LEFT JOIN area ON ns.areaId =area.id
+        LEFT JOIN ap ON ns.apId=ap.id
+        WHERE
+        1=1
+        and
+        ns.networkDelay <![CDATA[>= ]]> ${networkDelayPassValue}
+        <if test="sceneName!=null">
+            AND scene.name=#{sceneName}
+        </if>
+        <if test="areaName!=null">
+            AND area.name=#{areaName}
+        </if>
+        <if test="apName!=null">
+            AND ap.name=#{apName}
+        </if>
+
+    </select>
+
+    <select id="selectLTData" resultType="com.suzao.net.speed.netspeed.vo.network.NetworkSpeedVo"
+            parameterType="java.util.List">
+        SELECT ns.`id`,
+        ns.`networkDelay`,
+        ns.`downloadSpeed`,
+        ns.`uploadSpeed`,
+        ns.`time`,
+        ns.`address`,
+        ns.`macAddress`,
+        ns.`macAddress5G`,
+        ns.`sceneId`,
+        ns.`areaId`,
+        ns.`apId`,
+        ns.`speedometer`,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM networkspeed ns
+        LEFT JOIN scene ON ns.sceneId=scene.id
+        LEFT JOIN area ON ns.areaId =area.id
+        LEFT JOIN ap ON ns.apId=ap.id
+        WHERE
+        1=1
+        and
+        ns.networkDelay <![CDATA[< ]]>${networkDelayPassValue}
+        <if test="sceneName!=null">
+            AND scene.name=#{sceneName}
+        </if>
+        <if test="areaName!=null">
+            AND area.name=#{areaName}
+        </if>
+        <if test="apName!=null">
+            AND ap.name=#{apName}
+        </if>
+
+    </select>
+
+    <select id="selectData" resultType="com.suzao.net.speed.netspeed.vo.network.NetworkSpeedVo"
+            parameterType="java.util.List">
+        SELECT ns.`id`,
+        ns.`networkDelay`,
+        ns.`downloadSpeed`,
+        ns.`uploadSpeed`,
+        ns.`time`,
+        ns.`address`,
+        ns.`macAddress`,
+        ns.`macAddress5G`,
+        ns.`sceneId`,
+        ns.`areaId`,
+        ns.`apId`,
+        ns.`speedometer`,
+        scene.`name` sceneName,
+        area.`name` areaName,
+        ap.`name` apName
+        FROM networkspeed ns
+        LEFT JOIN scene ON ns.sceneId=scene.id
+        LEFT JOIN area ON ns.areaId =area.id
+        LEFT JOIN ap ON ns.apId=ap.id
+        WHERE
+        1=1
+        <if test="sceneName!=null">
+            AND scene.name=#{sceneName}
+        </if>
+        <if test="areaName!=null">
+            AND area.name=#{areaName}
+        </if>
+        <if test="apName!=null">
+            AND ap.name=#{apName}
+        </if>
+
+    </select>
+
+    <select id="getSpeedRecord" resultType="com.suzao.net.speed.netspeed.bo.network.SpeedRecordBo" >
+SELECT * FROM (select time as speedTime,CONCAT(downloadSpeed,'/',uploadSpeed) speedMetric,'上下行' as speedName,'网络测速' as speedType from networkspeed ORDER BY time DESC LIMIT 5 ) as netss
+UNION
+ SELECT * FROM (SELECT time as speedTime,speed as speedMetric,platform as speedName,'体验测速' as speedType FROM experiencespeed ORDER BY time desc LIMIT 5) as exnet
+    </select>
+</mapper>

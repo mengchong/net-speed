@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.suzao.net.speed.netspeed.dao.network.PassValueDao">
+
+    <insert id="insert" parameterType="java.util.List">
+        replace into passvalue
+        (id,networkPassValue,lostPacketRatePassValue,delayPassValue,networkDelayPassValue)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.networkPassValue},#{item.lostPacketRatePassValue},#{item.delayPassValue},#{item.networkDelayPassValue})
+        </foreach>
+    </insert>
+
+   <!-- <update id="update" parameterType="com.vlinksoft.ves.dm.object.Monitoring">
+        UPDATE passvalue pv
+        <set>
+            pv.`networkPassValue` = #{networkPassValue},
+            pv.`lostPacketRatePassValue` = #{lostPacketRatePassValue},
+            pv.`delayPassValue` = #{delayPassValue},
+            pv.`networkDelayPassValue` = #{networkDelayPassValue}
+        </set>
+        where pv.`id` = #{id}
+    </update>-->
+
+    <select id="selectAll" resultType="com.suzao.net.speed.netspeed.vo.network.PassValueVo">
+        select
+        pv.`id`,
+        pv.`networkPassValue`,
+        pv.`lostPacketRatePassValue`,
+        pv.`delayPassValue`,
+        pv.`networkDelayPassValue`
+        FROM
+        passvalue pv
+    </select>
+
+</mapper>
